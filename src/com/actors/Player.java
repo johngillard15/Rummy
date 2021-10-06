@@ -1,6 +1,8 @@
 package com.actors;
 
+import com.card.Card;
 import com.game.Actor;
+import com.game.Hand;
 
 public class Player implements Actor {
     private final String name;
@@ -16,17 +18,17 @@ public class Player implements Actor {
     }
 
     @Override
-    public byte getAction() {
+    public byte getAction(Hand hand, Card faceUpCard) {
         return PASS;
     }
 
     @Override
     public int getScore() {
-        return 0;
+        return score;
     }
 
     @Override
-    public void addScore() {
-
+    public void addScore(int points) {
+        score += points;
     }
 }

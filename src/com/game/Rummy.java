@@ -1,6 +1,7 @@
 package com.game;
 
 import com.actors.Player;
+import com.card.Card;
 import com.deck.Deck;
 import com.deck.StandardDeck;
 import com.utilities.Input;
@@ -51,7 +52,8 @@ import java.util.List;
 
 public class Rummy {
     private Deck deck;
-    Actor player1, player2;
+    private final List<Card> discardPile = new ArrayList<>();
+    Hand player1, player2;
     public static final int UNDERCUT = 10;
     public static final int GIN = 20;
     public static final int BIG_GIN = 10;
@@ -60,26 +62,49 @@ public class Rummy {
 
     }
 
-    private void setup(){
-        deck = new StandardDeck();
-        deck.shuffle();
-    }
-
     public void play(){
         do{
+            setup();
             while(round());
 
             System.out.println("Would you like to play again? (y/n)");
         }while(Input.getBoolean("y", "n"));
     }
 
+    private void setup(){
+        player1.clear();
+        player2.clear();
+
+        discardPile.clear();
+        deck = new StandardDeck();
+        deck.shuffle();
+
+        for(int i = 0; i < 10; i++){
+            player1.addCard(deck.draw());
+            player2.addCard(deck.draw());
+        }
+
+        discardPile.add(deck.draw());
+    }
+
     private boolean round(){
+
+        while(turn(player1) && turn(player2));
 
         return true;
     }
 
-    private void turn(Player activePlayer){
+    private boolean turn(Hand activePlayer){
+        System.out.printf("\n- %s turn -\n", activePlayer.getName());
 
+        byte action = activePlayer.getAction(activePlayer, discardPile.get(discardPile.size() - 1));
+        return switch(action){
+            case Actor.PASS -> true;
+            case Actor.DRAW_STOCK -> true;
+            case Actor.DRAW_DISCARD -> true;
+            case Actor.KNOCK -> false;
+            default -> throw new IllegalStateException("Invalid action: " + action);
+        };
     }
 
     private void displayResults(){

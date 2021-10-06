@@ -56,7 +56,7 @@ public class StandardDeck implements Deck {
     public static class SortByValue implements Comparator<Card> {
         @Override
         public int compare(Card cardA, Card cardB){
-            return Arrays.asList(VALUES).indexOf(cardA.value) - Arrays.asList(VALUES).indexOf(cardB.value);
+            return cardA.value - cardB.value;
         }
     }
 
