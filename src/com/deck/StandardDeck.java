@@ -14,6 +14,14 @@ public class StandardDeck implements Deck {
     public static final int[] VALUES = {
             1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13
     };
+    public static final String cardBack = """
+                ╭─────────╮
+                │╠╬╬╬╬╬╬╬╣│
+                │╠╬╬╬╬╬╬╬╣│
+                │╠╬╬╬╬╬╬╬╣│
+                │╠╬╬╬╬╬╬╬╣│
+                │╠╬╬╬╬╬╬╬╣│
+                ╰─────────╯""";
     protected List<Card> pile = new ArrayList<>();
     public final int decks;
 
@@ -35,6 +43,10 @@ public class StandardDeck implements Deck {
                     pile.add(new Card(suit, value));
             }
         }
+    }
+
+    public int size(){
+        return pile.size();
     }
 
     public void shuffle(){
@@ -62,15 +74,8 @@ public class StandardDeck implements Deck {
         }
     }
 
-    public static String getBackCard(){
-        return """
-                ╭─────────╮
-                │╠╬╬╬╬╬╬╬╣│
-                │╠╬╬╬╬╬╬╬╣│
-                │╠╬╬╬╬╬╬╬╣│
-                │╠╬╬╬╬╬╬╬╣│
-                │╠╬╬╬╬╬╬╬╣│
-                ╰─────────╯""";
+    public static void showCard(Card card){
+        System.out.println(getCardGUI(card));
     }
 
     public static void showHand(List<Card> cards){

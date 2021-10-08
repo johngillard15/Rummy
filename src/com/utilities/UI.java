@@ -76,9 +76,6 @@ public class UI {
     }
 
     public static void showSideBySide(String... strings){
-        showSideBySide(" ", strings);
-    }
-    public static void showSideBySide(String spacer, String... strings){
         List<Scanner> scannerList = new ArrayList<>();
         for(String string : strings)
             scannerList.add(new Scanner(string));
@@ -86,7 +83,7 @@ public class UI {
         while(scannerList.get(0).hasNextLine()){
             StringBuilder line = new StringBuilder();
             for(Scanner scanner : scannerList)
-                line.append(scanner.nextLine()).append(spacer);
+                line.append(scanner.nextLine()).append(" ");
             System.out.printf("%s\n", line);
         }
 

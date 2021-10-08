@@ -6,6 +6,7 @@ import com.deck.Deck;
 import com.deck.StandardDeck;
 import com.utilities.CLI;
 import com.utilities.Input;
+import com.utilities.UI;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -17,7 +18,7 @@ import java.util.List;
  *
  * @author John Gillard
  * @since 4/10/2021
- * @version 0.3.0
+ * @version 0.4.0
  */
 
 /*
@@ -55,8 +56,7 @@ import java.util.List;
  * - player with gin gets the value of opponents unmatched cards in addition to a 25(20?) point bonus
  * - if the draw deck gets down to 2 cards without a knock, the round is void
  *
- * Big Gin
- * -
+ * if deck gets down to 2 cards, the round is void and ends.
  *
  * Win Conditions
  * - first player to 100 points wins
@@ -119,7 +119,7 @@ public class Rummy {
 
         while(turn(player1) && turn(player2));
 
-        return player1.getScore() < 100 && player2.getScore() < 100; // TODO: repeat rounds until score reaches 100
+        return player1.getScore() < 100 && player2.getScore() < 100;
     }
 
     private Card getFaceUpCard(){
@@ -134,20 +134,23 @@ public class Rummy {
         activePlayer.sortByValue();
         boolean drawing = false;
         do{
-            StandardDeck.getCardGUI(getFaceUpCard());
+            UI.showSideBySide(StandardDeck.cardBack, StandardDeck.getCardGUI(getFaceUpCard()));
             StandardDeck.showHand(activePlayer.getCards());
 
             System.out.println("Would you like to sort your cards or draw?");
+            System.out.println("1. Sort by Value | 2. Sort by Suit | 3. Draw");
             int choice = Input.getInt(1, 3);
-            switch(choice){
+            switch (choice) {
                 case 1 -> activePlayer.sortByValue();
                 case 2 -> activePlayer.sortBySuit();
                 case 3 -> drawing = true;
             }
+
         }while(!drawing);
 
         System.out.println("Draw from stock or discard pile, or knock");
-        byte action = activePlayer.getAction(activePlayer, discardPile.get(discardPile.size() - 1));
+        System.out.println("1. Draw from Stock | 2. Draw from Discard Pile | 3. Knock");
+        byte action = activePlayer.getAction(activePlayer, getFaceUpCard());
         boolean knocked = switch(action){
             case Actor.DRAW_STOCK -> {
                 System.out.println("Drawing from stock");
