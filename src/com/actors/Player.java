@@ -3,6 +3,7 @@ package com.actors;
 import com.card.Card;
 import com.game.Actor;
 import com.game.Hand;
+import com.utilities.Input;
 
 public class Player implements Actor {
     private final String name;
@@ -18,8 +19,9 @@ public class Player implements Actor {
     }
 
     @Override
-    public byte getAction(Hand hand, Card faceUpCard) {
-        return PASS;
+    public byte getAction(Hand hand, Card faceUpCard){
+        System.out.print("Action: ");
+        return (byte)Input.getInt(1, 3);
     }
 
     @Override

@@ -28,7 +28,4 @@ public class TestDeck implements Deck{
 
         return new Card(SUITS[suitIndex], VALUES[valueIndex]);
     }
-
-    @Override
-    public void discard(Card card){}
 }

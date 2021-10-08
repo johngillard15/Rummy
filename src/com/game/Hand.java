@@ -34,8 +34,20 @@ public class Hand {
         cards.sort(new StandardDeck.SortByValue());
     }
 
+    public List<Card> getCards(){
+        return List.copyOf(cards);
+    }
+
     public String getName(){
-        holder.getName();
+        return holder.getName();
+    }
+
+    public int getScore(){
+        return holder.getScore();
+    }
+
+    public void addScore(int points) {
+        holder.addScore(points);
     }
 
     public byte getAction(Hand hand, Card faceUpCard){

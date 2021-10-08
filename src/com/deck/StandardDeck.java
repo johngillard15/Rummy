@@ -1,7 +1,9 @@
 package com.deck;
 
 import com.card.Card;
+import com.utilities.ANSI;
 import com.utilities.Input;
+import com.utilities.UI;
 
 import java.util.*;
 
@@ -19,7 +21,7 @@ public class StandardDeck implements Deck {
         System.out.println("How many decks will be used?");
         System.out.print("decks ");
 
-        fillDeck(this.decks = Input.getInt(1, 8));
+        fillDeck(decks = Input.getInt(1, 8));
     }
 
     public StandardDeck(int decks){
@@ -71,6 +73,13 @@ public class StandardDeck implements Deck {
                 ╰─────────╯""";
     }
 
+    public static void showHand(List<Card> cards){
+        UI.showSideBySide(cards.stream()
+                .map(StandardDeck::getCardGUI)
+                .toArray(String[]::new)
+        );
+    }
+
     public static String getCardGUI(Card card){
         String formattedCard =
                 """
@@ -84,8 +93,8 @@ public class StandardDeck implements Deck {
 
         String suitFace = switch(card.suit){
             case "Clubs" -> "♣";
-            case "Diamonds" -> "♦";
-            case "Hearts" -> "♥";
+            case "Diamonds" -> ANSI.RED + "♦" + ANSI.RESET;
+            case "Hearts" -> ANSI.RED + "♥" + ANSI.RESET;
             case "Spades" -> "♠";
             default -> throw new IllegalStateException("Unexpected suit: " + card.suit);
         } + "   ";
