@@ -11,6 +11,7 @@ public class Player implements Actor {
 
     public Player(String name){
         this.name = name;
+        score = 0;
     }
 
     @Override
