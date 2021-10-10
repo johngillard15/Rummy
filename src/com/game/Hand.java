@@ -58,6 +58,12 @@ public class Hand {
 
 
     public int getDeadwood(){
-        return cards.stream().mapToInt(card -> card.value).sum();
+        return cards.stream()
+                .mapToInt(card -> switch(card.value){
+                    case 11, 12, 13 -> 10;
+                    default -> card.value;
+                })
+                .sum()
+                ;
     }
 }
