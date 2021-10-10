@@ -8,6 +8,7 @@ import java.util.List;
 
 public class Hand {
     private List<Card> cards = new ArrayList<>();
+    private List<List<Card>> melds = new ArrayList<>();
     private final Actor holder;
 
     public Hand(Actor actor){
@@ -53,6 +54,8 @@ public class Hand {
     public byte getAction(Hand hand, Card faceUpCard){
         return holder.getAction(hand, faceUpCard);
     }
+
+
 
     public int getDeadwood(){
         return cards.stream().mapToInt(card -> card.value).sum();
