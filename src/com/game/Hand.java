@@ -55,7 +55,22 @@ public class Hand {
         return holder.getAction(hand, faceUpCard);
     }
 
+    private List<List<Card>> findMelds(){
+        List<List<Card>> tempMelds = new ArrayList<>();
 
+        for(Card card : cards){
+            // TODO: find all possible sets and runs
+        }
+
+        return tempMelds;
+    }
+
+    public void selectMelds(){
+        List<List<Card>> tempMelds = findMelds();
+        System.out.println("\nSelect a meld to save:");
+
+
+    }
 
     public int getDeadwood(){
         return cards.stream()
