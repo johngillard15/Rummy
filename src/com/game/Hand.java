@@ -4,6 +4,7 @@ import com.card.Card;
 import com.deck.StandardDeck;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
 
@@ -56,8 +57,7 @@ public class Hand {
         return holder.getAction(hand, faceUpCard);
     }
 
-    private List<List<Card>> findMelds(){
-        List<List<Card>> tempMelds = new ArrayList<>();
+    private void findMelds(){
         List<Card> tempList;
 
         // Sets
@@ -76,7 +76,7 @@ public class Hand {
 
             // minimum of 3 for set
             if(tempList.size() >= 3)
-                tempMelds.add(tempList);
+                melds.add(tempList);
             if(tempList.size() > 0)
                 i += tempList.size() - 1;
         }
@@ -97,19 +97,18 @@ public class Hand {
 
             // minimum of 3 for run
             if(tempList.size() >= 3)
-                tempMelds.add(tempList);
+                melds.add(tempList);
         }
-
-        return tempMelds;
     }
 
     public void selectMelds(){
-        List<List<Card>> tempMelds = findMelds();
+        findMelds();
+        melds.sort(Comparator.comparingInt(List::size));
 
 //        System.out.println("\nSelect a meld to use:");
         System.out.println("\nPossible melds:");
         int listNum = 0;
-        for(List<Card> meld : tempMelds){
+        for(List<Card> meld : melds){
             String type = Objects.equals(meld.get(0).suit, meld.get(1).suit)
                     ? meld.get(0).suit + " Run"
                     : "Set of " + meld.get(0).rankName() + "s";
