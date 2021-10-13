@@ -19,7 +19,7 @@ import java.util.List;
  *
  * @author John Gillard
  * @since 4/10/2021
- * @version 0.7.0
+ * @version 0.7.1
  */
 
 /*
@@ -69,7 +69,7 @@ public class Rummy {
     Hand player1, player2;
     public static final int UNDERCUT = 10;
     public static final int GIN = 20;
-    public static final int BIG_GIN = 10;
+    public static final int BIG_GIN = 30;
 
     public Rummy(){
         player1 = new Hand(new Player("P1"));

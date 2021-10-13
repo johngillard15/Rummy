@@ -100,15 +100,21 @@ public class Hand {
         List<List<Card>> tempMelds = findMelds();
         tempMelds.sort(Comparator.comparingInt(List::size));
 
+        if(!tempMelds.isEmpty()){
 //        System.out.println("\nSelect a meld to use:");
-        System.out.println("\nPossible melds:");
-        int listNum = 0;
-        for(List<Card> meld : tempMelds){
-            String type = Objects.equals(meld.get(0).suit, meld.get(1).suit)
-                    ? meld.get(0).suit + " Run"
-                    : "Set of " + meld.get(0).rankName() + "s";
-            System.out.printf("%d. %s %s\n", ++listNum, type, meld);
+            System.out.println("\nPossible melds:");
+            int listNum = 0;
+            for(List<Card> meld : tempMelds){
+                String type = Objects.equals(meld.get(0).suit, meld.get(1).suit)
+                        ? meld.get(0).suit + " Run"
+                        : "Set of " + meld.get(0).rankName() + "s";
+                System.out.printf("%d. %s %s\n", ++listNum, type, meld);
+            }
         }
+        // TODO: if there are no possible melds left in cards list and the melds list is not empty,
+        //  check if cards can be added to a meld
+        // TODO: check if cards can be added to an existing meld
+        // TODO: check if updated melds can be combined
 
 
     }
