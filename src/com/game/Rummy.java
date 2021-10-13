@@ -19,7 +19,7 @@ import java.util.List;
  *
  * @author John Gillard
  * @since 4/10/2021
- * @version 0.5.0
+ * @version 0.6.0
  */
 
 /*
@@ -133,6 +133,7 @@ public class Rummy {
         CLI.pause();
 
         activePlayer.sortByValue();
+        activePlayer.sortBySuit();
         boolean drawing = false;
         do{
             UI.showSideBySide(StandardDeck.cardBack, StandardDeck.getCardGUI(getFaceUpCard()));
@@ -185,6 +186,7 @@ public class Rummy {
             for(int i = 1; i <= 11; i++)
                 cardNumbers.append(String.format("     %s     ", i < 10 ? i + " " : i));
             System.out.println(cardNumbers);
+            System.out.println(" ".repeat(123) + " Drawn");
 
             System.out.println("Select a card to get rid of:");
             discardPile.add(activePlayer.removeCard(Input.getInt(1, 11) - 1));

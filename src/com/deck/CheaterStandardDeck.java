@@ -24,7 +24,9 @@ public class CheaterStandardDeck extends StandardDeck {
         return super.draw();
     }
 
-    public Card cheatDraw(){ // FIXME: 10/12/2021 shows the "couldn't find card" text twice and just continues...
+    public Card cheatDraw(){
+        cheatCard = null;
+
         do{
             System.out.println("Ace -> 1\n2 - 10\nJack -> 11\nQueen -> 12\nKing -> 13");
             System.out.println("Value:");
@@ -56,7 +58,7 @@ public class CheaterStandardDeck extends StandardDeck {
         if(decks > 1){
             cheatCard = new Card(SUITS[suitIndex], VALUES[valueIndex]);
             inDeck = pile.removeIf(thisCard -> thisCard.suit.equals(SUITS[suitIndex])
-                    && thisCard.value == VALUES[valueIndex]);
+                    && thisCard.rank == VALUES[valueIndex]);
 
             return inDeck;
         }
@@ -64,14 +66,14 @@ public class CheaterStandardDeck extends StandardDeck {
         else{
             try{
                 cheatCard = pile.stream()
-                        .filter(card -> card.suit.equals(SUITS[suitIndex]) && card.value == VALUES[valueIndex])
+                        .filter(card -> card.suit.equals(SUITS[suitIndex]) && card.rank == VALUES[valueIndex])
                         .collect(Collectors.toList())
                         .get(0);
                 inDeck = pile.remove(cheatCard);
 
                 return true;
             }
-            catch (IndexOutOfBoundsException e){
+            catch(IndexOutOfBoundsException e){
                 System.out.println("We don't have that card, pick another one...");
 
                 return false;

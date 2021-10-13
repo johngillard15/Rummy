@@ -4,8 +4,8 @@ import com.card.Card;
 import com.deck.StandardDeck;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 
 public class Hand {
     private List<Card> cards = new ArrayList<>();
@@ -58,28 +58,46 @@ public class Hand {
 
     private List<List<Card>> findMelds(){
         List<List<Card>> tempMelds = new ArrayList<>();
+        List<Card> tempList;
 
+        // Sets
         sortByValue();
         for(int i = 0; i < cards.size() - 2; i++){
-            // minimum of 3 for set
-            if(cards.get(i).value == cards.get(i + 1).value && cards.get(i).value == cards.get(i + 2).value){
-                List<Card> tempList = new ArrayList<>(Arrays.asList(cards.get(i), cards.get(i + 1), cards.get(i + 2)));
+            tempList = new ArrayList<>(List.of(cards.get(i)));
 
-                // maximum of 4 for set
-                if(i < cards.size() - 3 && cards.get(i).value == cards.get(i + 3).value){
+            if(cards.get(i).rank == cards.get(i + 1).rank && cards.get(i).rank == cards.get(i + 2).rank){
+                tempList.add(cards.get(i + 1));
+                tempList.add(cards.get(i + 2));
+
+                // maximum of 4 for set (because a single deck only has 4 of each card)
+                if(i + 3 < cards.size() && cards.get(i).rank == cards.get(i + 3).rank)
                     tempList.add(cards.get(i + 3));
-                    i += 3;
-                }
-                else
-                    i += 2;
-
-                tempMelds.add(tempList);
             }
 
+            // minimum of 3 for set
+            if(tempList.size() >= 3)
+                tempMelds.add(tempList);
+            if(tempList.size() > 0)
+                i += tempList.size() - 1;
         }
 
+        // Runs
+        sortBySuit();
         for(int i = 0; i < cards.size() - 2; i++){
-            // TODO: add run detection
+            tempList = new ArrayList<>(List.of(cards.get(i)));
+
+            // add any card that follows the sequence
+            while(i + 1 < cards.size() && Objects.equals(cards.get(i).suit, cards.get(i + 1).suit)){
+                if(cards.get(i).rank + 1 == cards.get(i + 1).rank)
+                    tempList.add(cards.get(i + 1));
+                else if(cards.get(i).rank != cards.get(i + 1).rank)
+                    break;
+                ++i;
+            }
+
+            // minimum of 3 for run
+            if(tempList.size() >= 3)
+                tempMelds.add(tempList);
         }
 
         return tempMelds;
@@ -89,18 +107,30 @@ public class Hand {
         List<List<Card>> tempMelds = findMelds();
 
 //        System.out.println("\nSelect a meld to use:");
-        System.out.println("\n Possible melds:");
+        System.out.println("\nPossible melds:");
+        int listNum = 0;
         for(List<Card> meld : tempMelds){
-            System.out.println(meld);
+            String type = Objects.equals(meld.get(0).suit, meld.get(1).suit)
+                    ? meld.get(0).suit + " Run"
+                    : "Set of " + meld.get(0).rankName() + "s";
+            System.out.printf("%d. %s %s\n", ++listNum, type, meld);
         }
-
     }
+
+//    public void addToMeld(int index){ // TODO: remember to sort!
+//        addToMeld(cards.get(index));
+//    }
+//    public void addToMeld(Card card){
+//        for(List<Card> meld : melds){
+//
+//        }
+//    }
 
     public int getDeadwood(){
         return cards.stream()
-                .mapToInt(card -> switch(card.value){
+                .mapToInt(card -> switch(card.rank){
                     case 11, 12, 13 -> 10;
-                    default -> card.value;
+                    default -> card.rank;
                 })
                 .sum()
                 ;

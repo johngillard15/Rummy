@@ -9,7 +9,7 @@ import java.util.*;
 
 public class StandardDeck implements Deck {
     public static final String[] SUITS = {
-            "Clubs", "Diamonds", "Hearts", "Spades"
+            "Diamond", "Club", "Heart", "Spade"
     };
     public static final int[] VALUES = {
             1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13
@@ -70,7 +70,7 @@ public class StandardDeck implements Deck {
     public static class SortByValue implements Comparator<Card> {
         @Override
         public int compare(Card cardA, Card cardB){
-            return cardA.value - cardB.value;
+            return cardA.rank - cardB.rank;
         }
     }
 
@@ -97,24 +97,24 @@ public class StandardDeck implements Deck {
                 ╰─────────╯""";
 
         String suitFace = switch(card.suit){
-            case "Clubs" -> "♣";
-            case "Diamonds" -> ANSI.RED + "♦" + ANSI.RESET;
-            case "Hearts" -> ANSI.RED + "♥" + ANSI.RESET;
-            case "Spades" -> "♠";
+            case "Diamond" -> ANSI.RED + "♦" + ANSI.RESET;
+            case "Club" -> "♣";
+            case "Heart" -> ANSI.RED + "♥" + ANSI.RESET;
+            case "Spade" -> "♠";
             default -> throw new IllegalStateException("Unexpected suit: " + card.suit);
         } + "   ";
 
-        String valueFace = switch(card.value){
+        String valueFace = switch(card.rank){
             case 1 -> "A";
             case 11 -> "J";
             case 12 -> "Q";
             case 13 -> "K";
-            default -> String.valueOf(card.value);
+            default -> String.valueOf(card.rank);
         };
 
         String top = valueFace, bot = valueFace;
 
-        if(!(card.value == 10)){
+        if(!(card.rank == 10)){
             top = valueFace + " ";
             bot = " " + valueFace;
         }
