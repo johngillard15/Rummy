@@ -19,7 +19,7 @@ import java.util.List;
  *
  * @author John Gillard
  * @since 4/10/2021
- * @version 0.7.1
+ * @version 0.7.2
  */
 
 /*

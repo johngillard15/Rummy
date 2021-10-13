@@ -96,6 +96,14 @@ public class Hand {
         return tempMelds;
     }
 
+    private boolean checkSet(){
+        return true;
+    }
+
+    private boolean checkRun(){
+        return true;
+    }
+
     public void selectMelds(){
         List<List<Card>> tempMelds = findMelds();
         tempMelds.sort(Comparator.comparingInt(List::size));
@@ -119,14 +127,14 @@ public class Hand {
 
     }
 
-//    public void addToMeld(int index){ // TODO: remember to sort!
-//        addToMeld(cards.get(index));
-//    }
-//    public void addToMeld(Card card){
-//        for(List<Card> meld : melds){
-//
-//        }
-//    }
+    public void addToMeld(int cardIndex, int meldIndex){ // TODO: remember to sort!
+        addToMeld(cards.get(cardIndex), meldIndex);
+    }
+    public void addToMeld(Card card, int meldIndex){ // TODO: use checkSet/checkRun
+        // TODO: update to check if adding is possible
+        melds.get(meldIndex).add(card);
+        cards.remove(card);
+    }
 
     public int getDeadwood(){
         return cards.stream()
