@@ -19,7 +19,7 @@ import java.util.List;
  *
  * @author John Gillard
  * @since 4/10/2021
- * @version 0.6.1
+ * @version 0.7.0
  */
 
 /*
@@ -151,7 +151,7 @@ public class Rummy {
         }while(!drawing);
 
         System.out.println("Draw from stock or discard pile, or knock");
-        System.out.println("1. Draw from Stock | 2. Draw from Discard Pile | 3. Knock");
+        System.out.println("1. Draw from Stock | 2. Draw from Discard Pile | 3. Knock"); // 0 for cheatDraw
         byte action = activePlayer.getAction(activePlayer, getFaceUpCard());
         boolean knocked = switch(action){
             case 0, Actor.DRAW_STOCK -> {

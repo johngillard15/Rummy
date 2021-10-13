@@ -57,28 +57,23 @@ public class Hand {
         return holder.getAction(hand, faceUpCard);
     }
 
-    private void findMelds(){
+    private List<List<Card>> findMelds(){
+        List<List<Card>> tempMelds = new ArrayList<>();
         List<Card> tempList;
 
         // Sets
+        sortBySuit(); // just to keep same values ordered by suit
         sortByValue();
         for(int i = 0; i < cards.size() - 2; i++){
             tempList = new ArrayList<>(List.of(cards.get(i)));
 
-            if(cards.get(i).rank == cards.get(i + 1).rank && cards.get(i).rank == cards.get(i + 2).rank){
+            while(i + 1 < cards.size() && cards.get(i).rank == cards.get(i + 1).rank){
                 tempList.add(cards.get(i + 1));
-                tempList.add(cards.get(i + 2));
-
-                // maximum of 4 for set (because a single deck only has 4 of each card)
-                if(i + 3 < cards.size() && cards.get(i).rank == cards.get(i + 3).rank)
-                    tempList.add(cards.get(i + 3));
+                ++i;
             }
 
-            // minimum of 3 for set
             if(tempList.size() >= 3)
-                melds.add(tempList);
-            if(tempList.size() > 0)
-                i += tempList.size() - 1;
+                tempMelds.add(tempList);
         }
 
         // Runs
@@ -86,7 +81,6 @@ public class Hand {
         for(int i = 0; i < cards.size() - 2; i++){
             tempList = new ArrayList<>(List.of(cards.get(i)));
 
-            // add any card that follows the sequence
             while(i + 1 < cards.size() && Objects.equals(cards.get(i).suit, cards.get(i + 1).suit)){
                 if(cards.get(i).rank + 1 == cards.get(i + 1).rank)
                     tempList.add(cards.get(i + 1));
@@ -95,25 +89,28 @@ public class Hand {
                 ++i;
             }
 
-            // minimum of 3 for run
             if(tempList.size() >= 3)
-                melds.add(tempList);
+                tempMelds.add(tempList);
         }
+
+        return tempMelds;
     }
 
     public void selectMelds(){
-        findMelds();
-        melds.sort(Comparator.comparingInt(List::size));
+        List<List<Card>> tempMelds = findMelds();
+        tempMelds.sort(Comparator.comparingInt(List::size));
 
 //        System.out.println("\nSelect a meld to use:");
         System.out.println("\nPossible melds:");
         int listNum = 0;
-        for(List<Card> meld : melds){
+        for(List<Card> meld : tempMelds){
             String type = Objects.equals(meld.get(0).suit, meld.get(1).suit)
                     ? meld.get(0).suit + " Run"
                     : "Set of " + meld.get(0).rankName() + "s";
             System.out.printf("%d. %s %s\n", ++listNum, type, meld);
         }
+
+
     }
 
 //    public void addToMeld(int index){ // TODO: remember to sort!
