@@ -22,7 +22,7 @@ public class Player implements Actor {
     @Override
     public byte getAction(Hand hand, Card faceUpCard){
         System.out.print("Action: ");
-        return (byte)Input.getInt(1, 3);
+        return (byte)Input.getInt(0, 3);
     }
 
     @Override

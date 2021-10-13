@@ -4,6 +4,7 @@ import com.card.Card;
 import com.deck.StandardDeck;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class Hand {
@@ -58,8 +59,27 @@ public class Hand {
     private List<List<Card>> findMelds(){
         List<List<Card>> tempMelds = new ArrayList<>();
 
-        for(Card card : cards){
-            // TODO: find all possible sets and runs
+        sortByValue();
+        for(int i = 0; i < cards.size() - 2; i++){
+            // minimum of 3 for set
+            if(cards.get(i).value == cards.get(i + 1).value && cards.get(i).value == cards.get(i + 2).value){
+                List<Card> tempList = new ArrayList<>(Arrays.asList(cards.get(i), cards.get(i + 1), cards.get(i + 2)));
+
+                // maximum of 4 for set
+                if(i < cards.size() - 3 && cards.get(i).value == cards.get(i + 3).value){
+                    tempList.add(cards.get(i + 3));
+                    i += 3;
+                }
+                else
+                    i += 2;
+
+                tempMelds.add(tempList);
+            }
+
+        }
+
+        for(int i = 0; i < cards.size() - 2; i++){
+            // TODO: add run detection
         }
 
         return tempMelds;
@@ -67,8 +87,12 @@ public class Hand {
 
     public void selectMelds(){
         List<List<Card>> tempMelds = findMelds();
-        System.out.println("\nSelect a meld to save:");
 
+//        System.out.println("\nSelect a meld to use:");
+        System.out.println("\n Possible melds:");
+        for(List<Card> meld : tempMelds){
+            System.out.println(meld);
+        }
 
     }
 

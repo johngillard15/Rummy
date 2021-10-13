@@ -11,6 +11,6 @@ public class Card {
 
     @Override
     public String toString() {
-        return String.format("%s of %d", value, suit);
+        return String.format("%d of %s", value, suit);
     }
 }

@@ -11,12 +11,20 @@ public class CheaterStandardDeck extends StandardDeck {
     private Card cheatCard = null;
     private boolean inDeck = false;
 
+    public CheaterStandardDeck(){
+        super();
+    }
+
+    public CheaterStandardDeck(int decks) {
+        super(decks);
+    }
+
     @Override
     public Card draw(){
         return super.draw();
     }
 
-    public Card cheatDraw(){
+    public Card cheatDraw(){ // FIXME: 10/12/2021 shows the "couldn't find card" text twice and just continues...
         do{
             System.out.println("Ace -> 1\n2 - 10\nJack -> 11\nQueen -> 12\nKing -> 13");
             System.out.println("Value:");

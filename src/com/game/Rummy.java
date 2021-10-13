@@ -2,6 +2,7 @@ package com.game;
 
 import com.actors.Player;
 import com.card.Card;
+import com.deck.CheaterStandardDeck;
 import com.deck.Deck;
 import com.deck.StandardDeck;
 import com.utilities.CLI;
@@ -18,7 +19,7 @@ import java.util.List;
  *
  * @author John Gillard
  * @since 4/10/2021
- * @version 0.4.0
+ * @version 0.5.0
  */
 
 /*
@@ -102,7 +103,7 @@ public class Rummy {
         player2.clear();
 
         discardPile.clear();
-        deck = new StandardDeck(1);
+        deck = new CheaterStandardDeck(1);
         deck.shuffle();
 
         for(int i = 0; i < 10; i++){
@@ -152,9 +153,14 @@ public class Rummy {
         System.out.println("1. Draw from Stock | 2. Draw from Discard Pile | 3. Knock");
         byte action = activePlayer.getAction(activePlayer, getFaceUpCard());
         boolean knocked = switch(action){
-            case Actor.DRAW_STOCK -> {
+            case 0, Actor.DRAW_STOCK -> {
                 System.out.println("Drawing from stock");
-                activePlayer.addCard(deck.draw());
+
+                if(deck instanceof CheaterStandardDeck && action == 0)
+                    activePlayer.addCard(((CheaterStandardDeck) deck).cheatDraw());
+                else
+                    activePlayer.addCard(deck.draw());
+
                 yield false;
             }
             case Actor.DRAW_DISCARD -> {
@@ -183,6 +189,9 @@ public class Rummy {
             System.out.println("Select a card to get rid of:");
             discardPile.add(activePlayer.removeCard(Input.getInt(1, 11) - 1));
         }
+
+        activePlayer.selectMelds();
+        CLI.pause();
 
         return !knocked;
     }
