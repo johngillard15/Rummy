@@ -19,7 +19,7 @@ import java.util.List;
  *
  * @author John Gillard
  * @since 4/10/2021
- * @version 0.7.2
+ * @version 0.8.1
  */
 
 /*
@@ -137,6 +137,7 @@ public class Rummy {
         boolean drawing = false;
         do{
             UI.showSideBySide(StandardDeck.cardBack, StandardDeck.getCardGUI(getFaceUpCard()));
+            activePlayer.getPossibleMelds();
             StandardDeck.showHand(activePlayer.getCards());
 
             System.out.println("Would you like to sort your cards or draw?");
@@ -190,28 +191,47 @@ public class Rummy {
 
             System.out.println("Select a card to get rid of:");
             discardPile.add(activePlayer.removeCard(Input.getInt(1, 11) - 1));
-        }
 
-        activePlayer.selectMelds();
-        CLI.pause();
+            activePlayer.getPossibleMelds();
+            CLI.pause();
+        }
 
         return !knocked;
     }
 
     private void knock(int knocker){
+        if(knocker == 1){
+            System.out.println("Player 1");
+            player1.selectMelds();
+            System.out.println("Player 2");
+            player2.selectMelds();
+        }
+        else{
+            System.out.println("Player 2");
+            player2.selectMelds();
+            System.out.println("Player 1");
+            player1.selectMelds();
+        }
+        // TODO: remember to do the layoff before round results
+
         System.out.println("\n--- Round Results ---\n");
 
-        System.out.printf("\nPlayer 1%s deadwood: %d\n", knocker == 1 ? " (knocked)" : "", player1.getDeadwood());
-        System.out.printf("score: %d\n", player1.getScore());
-        System.out.printf("Player 2%s deadwood: %d\n", knocker == 2 ? " (knocked)" : "", player2.getDeadwood());
-        System.out.printf("score: %d\n", player2.getScore());
+        System.out.printf("Player 1%s deadwood: %d\n", knocker == 1 ? " (knocked)" : "", player1.getDeadwood());
+        StandardDeck.showHand(player1.getCards());
+        System.out.printf("Current score: %d\n", player1.getScore());
+
+        System.out.printf("\nPlayer 2%s deadwood: %d\n", knocker == 2 ? " (knocked)" : "", player2.getDeadwood());
+        StandardDeck.showHand(player2.getCards());
+        System.out.printf("Current score: %d\n", player2.getScore());
 
         int winner = player1.getDeadwood() < player2.getDeadwood() ? 1 : 2;
         System.out.printf("\nPlayer %d wins the round!\n", winner);
-        if(winner == 1)
+        if(winner == 1){
             player1.addScore(player2.getDeadwood() - player1.getDeadwood());
-        else
+        }
+        else{
             player2.addScore(player1.getDeadwood() - player2.getDeadwood());
+        }
 
         if(winner != knocker){
             System.out.printf("+%d points for undercut\n", UNDERCUT);
@@ -221,7 +241,7 @@ public class Rummy {
                 player2.addScore(UNDERCUT);
         }
 
-        System.out.println("\nNew scores");
+        System.out.println("\nNew scores:");
         System.out.printf("Player 1 score: %d\n", player1.getScore());
         System.out.printf("Player 2 score: %d\n", player2.getScore());
         CLI.pause();

@@ -2,6 +2,7 @@ package com.game;
 
 import com.card.Card;
 import com.deck.StandardDeck;
+import com.utilities.Input;
 
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -104,36 +105,56 @@ public class Hand {
         return true;
     }
 
-    public void selectMelds(){
-        List<List<Card>> tempMelds = findMelds();
-        tempMelds.sort(Comparator.comparingInt(List::size));
+    public void getPossibleMelds(){
+        melds.clear();
+        melds = findMelds();
 
-        if(!tempMelds.isEmpty()){
-//        System.out.println("\nSelect a meld to use:");
+        if(!melds.isEmpty()){
+            melds.sort(Comparator.comparingInt(List::size));
+
             System.out.println("\nPossible melds:");
             int listNum = 0;
-            for(List<Card> meld : tempMelds){
+            for(List<Card> meld : melds){
                 String type = Objects.equals(meld.get(0).suit, meld.get(1).suit)
                         ? meld.get(0).suit + " Run"
                         : "Set of " + meld.get(0).rankName() + "s";
                 System.out.printf("%d. %s %s\n", ++listNum, type, meld);
             }
         }
+
         // TODO: if there are no possible melds left in cards list and the melds list is not empty,
         //  check if cards can be added to a meld
         // TODO: check if cards can be added to an existing meld
         // TODO: check if updated melds can be combined
 
-
     }
 
-    public void addToMeld(int cardIndex, int meldIndex){ // TODO: remember to sort!
+    private void addToMeld(int cardIndex, int meldIndex){ // TODO: remember to sort!
         addToMeld(cards.get(cardIndex), meldIndex);
     }
-    public void addToMeld(Card card, int meldIndex){ // TODO: use checkSet/checkRun
+    private void addToMeld(Card card, int meldIndex){ // TODO: use checkSet/checkRun
         // TODO: update to check if adding is possible
         melds.get(meldIndex).add(card);
         cards.remove(card);
+    }
+
+    public void selectMelds(){
+        List<List<Card>> tempMelds = new ArrayList<>();
+
+        do{
+            getPossibleMelds();
+
+            if(!melds.isEmpty()){
+                System.out.println("Pick a meld to use:");
+                List<Card> meld = melds.get(Input.getInt(1, melds.size()) - 1);
+
+                tempMelds.add(meld);
+                for(Card card : meld)
+                    cards.remove(card);
+            }
+        }while(!melds.isEmpty());
+
+        melds = new ArrayList<>(tempMelds);
     }
 
     public int getDeadwood(){
