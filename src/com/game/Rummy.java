@@ -19,7 +19,7 @@ import java.util.List;
  *
  * @author John Gillard
  * @since 4/10/2021
- * @version 0.8.1
+ * @version 0.8.2
  */
 
 /*
@@ -143,7 +143,7 @@ public class Rummy {
             System.out.println("Would you like to sort your cards or draw?");
             System.out.println("1. Sort by Value | 2. Sort by Suit | 3. Draw");
             int choice = Input.getInt(1, 3);
-            switch (choice) {
+            switch(choice){
                 case 1 -> activePlayer.sortByValue();
                 case 2 -> activePlayer.sortBySuit();
                 case 3 -> drawing = true;

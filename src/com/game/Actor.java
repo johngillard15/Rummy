@@ -2,6 +2,8 @@ package com.game;
 
 import com.card.Card;
 
+import java.util.List;
+
 public interface Actor {
     byte DRAW_STOCK = 1;
     byte DRAW_DISCARD = 2;
@@ -9,6 +11,7 @@ public interface Actor {
 
     String getName();
     byte getAction(Hand hand, Card faceUpCard);
+    int pickMeld(List<List<Card>> melds);
     int getScore();
     void addScore(int points);
 }

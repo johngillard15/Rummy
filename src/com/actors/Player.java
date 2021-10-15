@@ -5,6 +5,8 @@ import com.game.Actor;
 import com.game.Hand;
 import com.utilities.Input;
 
+import java.util.List;
+
 public class Player implements Actor {
     private final String name;
     private int score;
@@ -22,7 +24,13 @@ public class Player implements Actor {
     @Override
     public byte getAction(Hand hand, Card faceUpCard){
         System.out.print("Action: ");
-        return (byte)Input.getInt(0, 3);
+        return (byte)Input.getInt(1, 3);
+    }
+
+    @Override
+    public int pickMeld(List<List<Card>> melds){
+        System.out.println("Pick a meld to use:");
+        return Input.getInt(1, melds.size());
     }
 
     @Override

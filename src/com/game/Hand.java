@@ -145,8 +145,7 @@ public class Hand {
             getPossibleMelds();
 
             if(!melds.isEmpty()){
-                System.out.println("Pick a meld to use:");
-                List<Card> meld = melds.get(Input.getInt(1, melds.size()) - 1);
+                List<Card> meld = melds.get(holder.pickMeld(melds) - 1);
 
                 tempMelds.add(meld);
                 for(Card card : meld)
