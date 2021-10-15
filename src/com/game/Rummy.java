@@ -19,7 +19,7 @@ import java.util.List;
  *
  * @author John Gillard
  * @since 4/10/2021
- * @version 0.8.2
+ * @version 0.8.3
  */
 
 /*
@@ -135,7 +135,7 @@ public class Rummy {
         activePlayer.sortByValue();
         activePlayer.sortBySuit();
         boolean drawing = false;
-        do{
+        do{ // TODO: move this stuff to Player somehow
             UI.showSideBySide(StandardDeck.cardBack, StandardDeck.getCardGUI(getFaceUpCard()));
             activePlayer.getPossibleMelds();
             StandardDeck.showHand(activePlayer.getCards());
@@ -143,7 +143,7 @@ public class Rummy {
             System.out.println("Would you like to sort your cards or draw?");
             System.out.println("1. Sort by Value | 2. Sort by Suit | 3. Draw");
             int choice = Input.getInt(1, 3);
-            switch(choice){
+            switch(choice){ // FIXME: 10/14/2021 these sorts are overwritten by getPossibleMelds, and are effectively useless right now
                 case 1 -> activePlayer.sortByValue();
                 case 2 -> activePlayer.sortBySuit();
                 case 3 -> drawing = true;
@@ -175,7 +175,7 @@ public class Rummy {
                 System.out.println("Knock!");
                 yield true;
             }
-            default -> throw new IllegalStateException("Invalid action: " + action);
+            default -> throw new IllegalStateException("Invalid action value: " + action);
         };
 
         if(knocked)

@@ -97,11 +97,25 @@ public class Hand {
         return tempMelds;
     }
 
-    private boolean checkSet(){
+    private boolean isMeld(List<Card> meld){
+        return isSet(meld) || isRun(meld);
+    }
+
+    private boolean isSet(List<Card> set){
+        for(int i = 1; i < set.size(); i++) {
+            if(set.get(i - 1).rank != set.get(i).rank)
+                return false;
+        }
+
         return true;
     }
 
-    private boolean checkRun(){
+    private boolean isRun(List<Card> run){
+        for(int i = 1; i < run.size(); i++) {
+            if(run.get(i - 1).rank != run.get(i).rank - 1)
+                return false;
+        }
+
         return true;
     }
 
@@ -129,14 +143,35 @@ public class Hand {
 
     }
 
-    private void addToMeld(int cardIndex, int meldIndex){ // TODO: remember to sort!
-        addToMeld(cards.get(cardIndex), meldIndex);
+    private Card layoff(List<List<Card>> opponentMelds){
+        do{
+            System.out.println("\nOpponent melds:");
+            int listNum = 0;
+            for (List<Card> meld : opponentMelds) {
+                String type = Objects.equals(meld.get(0).suit, meld.get(1).suit)
+                        ? meld.get(0).suit + " Run"
+                        : "Set of " + meld.get(0).rankName() + "s";
+                System.out.printf("%d. %s %s\n", ++listNum, type, meld);
+            }
+            System.out.println("Select a meld to use:");
+            int meldIndex = Input.getInt(0, opponentMelds.size()) - 1;
+            // TODO: remember to refactor ^this^ to use an Actor method
+            if(meldIndex == -1)
+                break;
+            // FIXME: 10/14/2021 finish and use isSet/isRun
+        }while(true);
+
+        return cards.get(Input.getInt(1, cards.size()));
     }
-    private void addToMeld(Card card, int meldIndex){ // TODO: use checkSet/checkRun
-        // TODO: update to check if adding is possible
-        melds.get(meldIndex).add(card);
-        cards.remove(card);
-    }
+
+//    private void addToMeld(int cardIndex, int meldIndex){ // TODO: remember to sort!
+//        addToMeld(cards.get(cardIndex), meldIndex);
+//    }
+//    private void addToMeld(Card card, int meldIndex){ // TODO: use checkSet/checkRun
+//        // TODO: update to check if adding is possible
+//        melds.get(meldIndex).add(card);
+//        cards.remove(card);
+//    }
 
     public void selectMelds(){
         List<List<Card>> tempMelds = new ArrayList<>();
