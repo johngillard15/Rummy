@@ -19,7 +19,7 @@ import java.util.List;
  *
  * @author John Gillard
  * @since 4/10/2021
- * @version 0.8.3
+ * @version 0.8.4
  */
 
 /*
@@ -89,15 +89,6 @@ public class Rummy {
         }while(Input.getBoolean("y", "n"));
     }
 
-    private void firstDraw(){
-        System.out.println(StandardDeck.getCardGUI(discardPile.get(0)));
-        System.out.println("\nTake face up card? (y/n)");
-        if(Input.getBoolean("y", "n"))
-            player1.addCard(discardPile.get(0));
-        else
-            player2.addCard(discardPile.get(0));
-    }
-
     private void setup(){
         player1.clear();
         player2.clear();
@@ -116,7 +107,6 @@ public class Rummy {
 
     private boolean round(){
         setup();
-//        firstDraw();
 
         while(turn(player1) && turn(player2));
 

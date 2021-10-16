@@ -97,26 +97,16 @@ public class Hand {
         return tempMelds;
     }
 
-    private boolean isMeld(List<Card> meld){
-        return isSet(meld) || isRun(meld);
+    private boolean isMeld(List<Card> meld, Card card){
+        return isSet(meld, card) || isRun(meld, card);
     }
 
-    private boolean isSet(List<Card> set){
-        for(int i = 1; i < set.size(); i++) {
-            if(set.get(i - 1).rank != set.get(i).rank)
-                return false;
-        }
-
-        return true;
+    private boolean isSet(List<Card> set, Card card){
+        return card.rank == set.get(0).rank;
     }
 
-    private boolean isRun(List<Card> run){
-        for(int i = 1; i < run.size(); i++) {
-            if(run.get(i - 1).rank != run.get(i).rank - 1)
-                return false;
-        }
-
-        return true;
+    private boolean isRun(List<Card> run, Card card){
+        return card.rank + 1 == run.get(0).rank || card.rank - 1 == run.get(run.size() - 1).rank;
     }
 
     public void getPossibleMelds(){
