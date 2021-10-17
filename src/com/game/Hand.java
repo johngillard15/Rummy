@@ -30,6 +30,10 @@ public class Hand {
         cards.clear();
     }
 
+    public int size(){
+        return cards.size();
+    }
+
     public void sortBySuit(){
         cards.sort(new StandardDeck.SortBySuit());
     }
@@ -40,6 +44,10 @@ public class Hand {
 
     public List<Card> getCards(){
         return List.copyOf(cards);
+    }
+
+    public List<List<Card>> getMelds(){
+        return List.copyOf(melds);
     }
 
     public String getName(){
@@ -56,6 +64,10 @@ public class Hand {
 
     public byte getAction(Hand hand, Card faceUpCard){
         return holder.getAction(hand, faceUpCard);
+    }
+
+    public int pickCard(){
+        return holder.pickCard(List.copyOf(cards));
     }
 
     private List<List<Card>> findMelds(){
@@ -133,7 +145,9 @@ public class Hand {
 
     }
 
-    private Card layoff(List<List<Card>> opponentMelds){
+    public void layoff(List<List<Card>> opponentMelds){
+
+
         do{
             System.out.println("\nOpponent melds:");
             int listNum = 0;
@@ -143,15 +157,17 @@ public class Hand {
                         : "Set of " + meld.get(0).rankName() + "s";
                 System.out.printf("%d. %s %s\n", ++listNum, type, meld);
             }
-            System.out.println("Select a meld to use:");
-            int meldIndex = Input.getInt(0, opponentMelds.size()) - 1;
-            // TODO: remember to refactor ^this^ to use an Actor method
+            int meldIndex = holder.pickMeld(opponentMelds);
+
             if(meldIndex == -1)
                 break;
-            // FIXME: 10/14/2021 finish and use isSet/isRun
-        }while(true);
 
-        return cards.get(Input.getInt(1, cards.size()));
+            System.out.println(cards);
+            int cardIndex = pickCard();
+
+            if(isMeld(opponentMelds.get(meldIndex), cards.get(cardIndex)))
+                opponentMelds.get(meldIndex).add(cards.remove(cardIndex));
+        }while(true);
     }
 
 //    private void addToMeld(int cardIndex, int meldIndex){ // TODO: remember to sort!

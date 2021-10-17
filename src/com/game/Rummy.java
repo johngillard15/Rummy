@@ -19,7 +19,7 @@ import java.util.List;
  *
  * @author John Gillard
  * @since 4/10/2021
- * @version 0.8.4
+ * @version 0.9.0
  */
 
 /*
@@ -180,7 +180,7 @@ public class Rummy {
             System.out.println(" ".repeat(123) + " Drawn");
 
             System.out.println("Select a card to get rid of:");
-            discardPile.add(activePlayer.removeCard(Input.getInt(1, 11) - 1));
+            discardPile.add(activePlayer.removeCard(activePlayer.pickCard()));
 
             activePlayer.getPossibleMelds();
             CLI.pause();
@@ -195,12 +195,14 @@ public class Rummy {
             player1.selectMelds();
             System.out.println("Player 2");
             player2.selectMelds();
+            player2.layoff(player1.getMelds());
         }
         else{
             System.out.println("Player 2");
             player2.selectMelds();
             System.out.println("Player 1");
             player1.selectMelds();
+            player1.layoff(player1.getMelds());
         }
         // TODO: remember to do the layoff before round results
 
