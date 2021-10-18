@@ -19,7 +19,7 @@ import java.util.List;
  *
  * @author John Gillard
  * @since 4/10/2021
- * @version 0.9.0
+ * @version 0.10.0
  */
 
 /*
@@ -191,14 +191,14 @@ public class Rummy {
 
     private void knock(int knocker){
         if(knocker == 1){
-            System.out.println("Player 1");
+            System.out.println("\n\nPlayer 1");
             player1.selectMelds();
             System.out.println("Player 2");
             player2.selectMelds();
             player2.layoff(player1.getMelds());
         }
         else{
-            System.out.println("Player 2");
+            System.out.println("\n\nPlayer 2");
             player2.selectMelds();
             System.out.println("Player 1");
             player1.selectMelds();

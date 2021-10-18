@@ -6,6 +6,7 @@ import com.game.Hand;
 import com.utilities.Input;
 
 import java.util.List;
+import java.util.Objects;
 
 public class Player implements Actor {
     private final String name;
@@ -35,7 +36,7 @@ public class Player implements Actor {
     @Override
     public int pickMeld(List<List<Card>> melds){
         System.out.println("Pick a meld to use:");
-        return Input.getInt(0, melds.size());
+        return Input.getInt(0, melds.size()) - 1;
     }
 
     @Override

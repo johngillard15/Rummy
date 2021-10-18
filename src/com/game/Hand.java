@@ -2,6 +2,7 @@ package com.game;
 
 import com.card.Card;
 import com.deck.StandardDeck;
+import com.utilities.CLI;
 import com.utilities.Input;
 
 import java.util.ArrayList;
@@ -109,6 +110,24 @@ public class Hand {
         return tempMelds;
     }
 
+    public void getPossibleMelds(){
+        melds.clear();
+        melds = findMelds();
+
+        if(!melds.isEmpty()){
+            melds.sort(Comparator.comparingInt(List::size));
+
+            System.out.println("Possible melds:");
+            int listNum = 0;
+            for(List<Card> meld : melds){
+                String type = Objects.equals(meld.get(0).suit, meld.get(1).suit)
+                        ? meld.get(0).suit + " Run"
+                        : "Set of " + meld.get(0).rankName() + "s";
+                System.out.printf("%d. %s %s\n", ++listNum, type, meld);
+            }
+        }
+    }
+
     private boolean isMeld(List<Card> meld, Card card){
         return isSet(meld, card) || isRun(meld, card);
     }
@@ -118,38 +137,15 @@ public class Hand {
     }
 
     private boolean isRun(List<Card> run, Card card){
-        return card.rank + 1 == run.get(0).rank || card.rank - 1 == run.get(run.size() - 1).rank;
-    }
-
-    public void getPossibleMelds(){
-        melds.clear();
-        melds = findMelds();
-
-        if(!melds.isEmpty()){
-            melds.sort(Comparator.comparingInt(List::size));
-
-            System.out.println("\nPossible melds:");
-            int listNum = 0;
-            for(List<Card> meld : melds){
-                String type = Objects.equals(meld.get(0).suit, meld.get(1).suit)
-                        ? meld.get(0).suit + " Run"
-                        : "Set of " + meld.get(0).rankName() + "s";
-                System.out.printf("%d. %s %s\n", ++listNum, type, meld);
-            }
-        }
-
-        // TODO: if there are no possible melds left in cards list and the melds list is not empty,
-        //  check if cards can be added to a meld
-        // TODO: check if cards can be added to an existing meld
-        // TODO: check if updated melds can be combined
-
+        return Objects.equals(card.suit, run.get(0).suit)
+                && card.rank + 1 == run.get(0).rank || card.rank - 1 == run.get(run.size() - 1).rank;
     }
 
     public void layoff(List<List<Card>> opponentMelds){
-
+        System.out.println("\nLayoff");
 
         do{
-            System.out.println("\nOpponent melds:");
+            System.out.println("Opponent melds:");
             int listNum = 0;
             for (List<Card> meld : opponentMelds) {
                 String type = Objects.equals(meld.get(0).suit, meld.get(1).suit)
@@ -157,27 +153,33 @@ public class Hand {
                         : "Set of " + meld.get(0).rankName() + "s";
                 System.out.printf("%d. %s %s\n", ++listNum, type, meld);
             }
-            int meldIndex = holder.pickMeld(opponentMelds);
 
+            int meldIndex = holder.pickMeld(opponentMelds);
             if(meldIndex == -1)
                 break;
 
-            System.out.println(cards);
+            System.out.println("\nYour cards:");
+            StandardDeck.showHand(cards);
+
+            StringBuilder cardNumbers = new StringBuilder();
+            for(int i = 1; i <= cards.size(); i++)
+                cardNumbers.append(String.format("     %s     ", i < 10 ? i + " " : i));
+            System.out.println(cardNumbers);
+            System.out.println("Choose a card:");
             int cardIndex = pickCard();
 
-            if(isMeld(opponentMelds.get(meldIndex), cards.get(cardIndex)))
+            if(isMeld(opponentMelds.get(meldIndex), cards.get(cardIndex))){
+                System.out.printf("Added %s to opponent meld.\n", cards.get(cardIndex));
                 opponentMelds.get(meldIndex).add(cards.remove(cardIndex));
+            }
+            else{
+                System.out.println("That card cannot be applied to this meld." +
+                        "\nPick another card/meld or enter '0' to end layoff");
+            }
+
+            CLI.pause();
         }while(true);
     }
-
-//    private void addToMeld(int cardIndex, int meldIndex){ // TODO: remember to sort!
-//        addToMeld(cards.get(cardIndex), meldIndex);
-//    }
-//    private void addToMeld(Card card, int meldIndex){ // TODO: use checkSet/checkRun
-//        // TODO: update to check if adding is possible
-//        melds.get(meldIndex).add(card);
-//        cards.remove(card);
-//    }
 
     public void selectMelds(){
         List<List<Card>> tempMelds = new ArrayList<>();
@@ -186,7 +188,7 @@ public class Hand {
             getPossibleMelds();
 
             if(!melds.isEmpty()){
-                List<Card> meld = melds.get(holder.pickMeld(melds) - 1);
+                List<Card> meld = melds.get(holder.pickMeld(melds));
 
                 tempMelds.add(meld);
                 for(Card card : meld)
