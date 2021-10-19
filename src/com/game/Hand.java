@@ -48,7 +48,7 @@ public class Hand {
     }
 
     public List<List<Card>> getMelds(){
-        return List.copyOf(melds);
+        return new ArrayList<>(melds);
     }
 
     public String getName(){
@@ -69,6 +69,10 @@ public class Hand {
 
     public int pickCard(){
         return holder.pickCard(List.copyOf(cards));
+    }
+
+    public void clearMelds(){
+        melds.clear();
     }
 
     public List<List<Card>> findMelds(){
@@ -118,44 +122,26 @@ public class Hand {
     }
 
     private boolean isRun(List<Card> run, Card card){
-        return Objects.equals(card.suit, run.get(0).suit)
+        return run.stream().allMatch(runCard -> Objects.equals(runCard.suit, card.suit))
+                && Objects.equals(card.suit, run.get(0).suit)
                 && card.rank + 1 == run.get(0).rank || card.rank - 1 == run.get(run.size() - 1).rank;
     }
 
     public void layoff(List<List<Card>> opponentMelds){
-        System.out.println("\nLayoff");
-
         do{
-            System.out.println("Opponent melds:");
-            int listNum = 0;
-            for (List<Card> meld : opponentMelds) {
-                String type = Objects.equals(meld.get(0).suit, meld.get(1).suit)
-                        ? meld.get(0).suit + " Run"
-                        : "Set of " + meld.get(0).rankName() + "s";
-                System.out.printf("%d. %s %s\n", ++listNum, type, meld);
-            }
-
-            int meldIndex = holder.pickMeld(opponentMelds);
+            int meldIndex = holder.pickMeld(opponentMelds); // TODO: make sure this does not run if list is empty
             if(meldIndex == -1)
                 break;
 
-            System.out.println("\nYour cards:");
-            StandardDeck.showHand(cards);
-
-            StringBuilder cardNumbers = new StringBuilder();
-            for(int i = 1; i <= cards.size(); i++)
-                cardNumbers.append(String.format("     %s     ", i < 10 ? i + " " : i));
-            System.out.println(cardNumbers);
-            System.out.println("Choose a card:");
             int cardIndex = pickCard();
 
             if(isMeld(opponentMelds.get(meldIndex), cards.get(cardIndex))){
                 System.out.printf("Added %s to opponent meld.\n", cards.get(cardIndex));
                 opponentMelds.get(meldIndex).add(cards.remove(cardIndex));
             }
-            else{
-                System.out.println("That card cannot be applied to this meld." +
-                        "\nPick another card/meld or enter '0' to end layoff");
+            else{ // TODO: improve this, maybe automate
+                System.out.println("That card cannot be applied to this meld.\n" +
+                        "Pick another card/meld or enter '0' to end layoff");
             }
 
             CLI.pause();
@@ -166,24 +152,14 @@ public class Hand {
         List<List<Card>> tempMelds = findMelds();
 
         while(!tempMelds.isEmpty()){
-            tempMelds.sort(Comparator.comparingInt(List::size));
+            List<Card> meld = tempMelds.get(holder.pickMeld(tempMelds));
 
-            System.out.println("Possible melds:");
-            int listNum = 0;
-            for(List<Card> meld : tempMelds){
-                String type = Objects.equals(meld.get(0).suit, meld.get(1).suit)
-                        ? meld.get(0).suit + " Run"
-                        : "Set of " + meld.get(0).rankName() + "s";
-                System.out.printf("%d. %s %s\n", ++listNum, type, meld);
-            }
-
-            List<Card> meld = tempMelds.get(holder.pickMeld(melds));
-            tempMelds.add(meld);
+            melds.add(meld);
             for(Card card : meld)
                 cards.remove(card);
-        }
 
-        melds = new ArrayList<>(tempMelds);
+            tempMelds = findMelds();
+        }
     }
 
     public int getDeadwood(){

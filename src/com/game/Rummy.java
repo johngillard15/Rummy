@@ -19,7 +19,7 @@ import java.util.List;
  *
  * @author John Gillard
  * @since 4/10/2021
- * @version 0.11.0
+ * @version 0.12.0
  */
 
 /*
@@ -91,7 +91,9 @@ public class Rummy {
 
     private void setup(){
         player1.clear();
+        player1.clearMelds();
         player2.clear();
+        player2.clearMelds();
 
         discardPile.clear();
         deck = new CheaterStandardDeck(1);
@@ -122,10 +124,20 @@ public class Rummy {
         System.out.printf("\n- Player %d's turn -\n", activePlayer == player1 ? 1 : 2);
         CLI.pause();
 
-        byte action = activePlayer.getAction(activePlayer, getFaceUpCard());
+        byte action;
+        boolean validAction;
+        do{
+            action = activePlayer.getAction(activePlayer, getFaceUpCard());
+
+            validAction = action >= 0 && action <= 3;
+
+            if(!validAction)
+                System.out.printf("Invalid action \"%d\"", action);
+        }while(!validAction);
+
         boolean knocked = switch(action){
             case 0, Actor.DRAW_STOCK -> {
-                System.out.println("Drawing from stock");
+                System.out.println("Drawing from stock...");
 
                 if(deck instanceof CheaterStandardDeck && action == 0)
                     activePlayer.addCard(((CheaterStandardDeck) deck).cheatDraw());
@@ -135,32 +147,27 @@ public class Rummy {
                 yield false;
             }
             case Actor.DRAW_DISCARD -> {
-                System.out.println("Drawing from discard pile");
+                System.out.println("Drawing from discard pile...");
                 activePlayer.addCard(getFaceUpCard());
                 discardPile.remove(discardPile.size() - 1);
                 yield false;
             }
             case Actor.KNOCK -> {
-                System.out.println("Knock!");
+                System.out.println("Knock!\nChoose which melds to use:");
+                knock(activePlayer);
+
                 yield true;
             }
             default -> throw new IllegalStateException("Invalid action value: " + action);
         };
 
-        if(knocked)
-            knock(activePlayer == player1 ? 1 : 2);
-        else{
-            StandardDeck.showHand(activePlayer.getCards());
-
-            StringBuilder cardNumbers = new StringBuilder();
-            for(int i = 1; i <= 11; i++)
-                cardNumbers.append(String.format("     %s     ", i < 10 ? i + " " : i));
-            System.out.println(cardNumbers);
-            System.out.println(" ".repeat(123) + " Drawn");
+        if(!knocked){
+            System.out.println("Discarding...");
 
             Card toBeDiscard = activePlayer.removeCard(activePlayer.pickCard());
             discardPile.add(toBeDiscard);
-            System.out.printf("Discarded the %s.\n", toBeDiscard);
+
+            System.out.printf("\nDiscarded the %s.\n", toBeDiscard);
 
             CLI.pause();
         }
@@ -168,47 +175,50 @@ public class Rummy {
         return !knocked;
     }
 
-    private void knock(int knocker){
-        if(knocker == 1){
+    private void knock(Hand knocker){
+        if(knocker == player1){
             System.out.println("\n\nPlayer 1");
             player1.selectMelds();
-            System.out.println("Player 2");
+            System.out.println("\nPlayer 2");
             player2.selectMelds();
+
+            System.out.println("Layoff");
             player2.layoff(player1.getMelds());
         }
         else{
             System.out.println("\n\nPlayer 2");
             player2.selectMelds();
-            System.out.println("Player 1");
+            System.out.println("\nPlayer 1");
             player1.selectMelds();
-            player1.layoff(player1.getMelds());
+
+            System.out.println("Layoff");
+            player1.layoff(player2.getMelds());
         }
 
         System.out.println("\n--- Round Results ---\n");
 
-        System.out.printf("Player 1%s deadwood: %d\n", knocker == 1 ? " (knocked)" : "", player1.getDeadwood());
+        System.out.printf("Player 1%s deadwood: %d\n", knocker == player1 ? " (knocked)" : "", player1.getDeadwood());
         StandardDeck.showHand(player1.getCards());
         System.out.printf("Current score: %d\n", player1.getScore());
 
-        System.out.printf("\nPlayer 2%s deadwood: %d\n", knocker == 2 ? " (knocked)" : "", player2.getDeadwood());
+        System.out.printf("\nPlayer 2%s deadwood: %d\n", knocker == player2 ? " (knocked)" : "", player2.getDeadwood());
         StandardDeck.showHand(player2.getCards());
         System.out.printf("Current score: %d\n", player2.getScore());
 
-        int winner = player1.getDeadwood() < player2.getDeadwood() ? 1 : 2;
-        System.out.printf("\nPlayer %d wins the round!\n", winner);
-        if(winner == 1){
+        Hand winningHand = player1.getDeadwood() < player2.getDeadwood() ? player1 : player2;
+        System.out.printf("\nPlayer %d wins the round!\n", winningHand == player1 ? 1 : 2);
+        if(winningHand == player1)
             player1.addScore(player2.getDeadwood() - player1.getDeadwood());
-        }
-        else{
+        else
             player2.addScore(player1.getDeadwood() - player2.getDeadwood());
-        }
 
-        if(winner != knocker){
+        if(winningHand != knocker){
             System.out.printf("+%d points for undercut\n", UNDERCUT);
-            if(winner == 1)
-                player1.addScore(UNDERCUT);
-            else
-                player2.addScore(UNDERCUT);
+            winningHand.addScore(UNDERCUT);
+        }
+        if(winningHand.size() == 0){
+            System.out.printf("+%d points for gin\n", GIN);
+            winningHand.addScore(GIN);
         }
 
         System.out.println("\nNew scores:");

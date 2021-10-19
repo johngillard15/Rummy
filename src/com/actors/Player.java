@@ -69,12 +69,33 @@ public class Player implements Actor {
 
     @Override
     public int pickCard(List<Card> cards) {
+        System.out.println("Your Cards");
+        StandardDeck.showHand(cards);
+
+        StringBuilder cardNumbers = new StringBuilder();
+        for (int i = 1; i <= cards.size(); i++)
+            cardNumbers.append(String.format("     %s     ", i < 10 ? i + " " : i));
+        System.out.println(cardNumbers);
+        if(cards.size() == 11)
+            System.out.println(" ".repeat(123) + " Drawn");
+
         System.out.println("Choose a card:");
         return Input.getInt(1, cards.size()) - 1;
     }
 
     @Override
     public int pickMeld(List<List<Card>> melds){
+        melds.sort(Comparator.comparingInt(List::size));
+
+        System.out.println("Possible melds:");
+        int listNum = 0;
+        for(List<Card> meld : melds){
+            String type = Objects.equals(meld.get(0).suit, meld.get(1).suit)
+                    ? meld.get(0).suit + " Run"
+                    : "Set of " + meld.get(0).rankName() + "s";
+            System.out.printf("%d. %s %s\n", ++listNum, type, meld);
+        }
+
         System.out.println("Pick a meld to use:");
         return Input.getInt(0, melds.size()) - 1;
     }
