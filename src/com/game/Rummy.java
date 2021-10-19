@@ -19,7 +19,7 @@ import java.util.List;
  *
  * @author John Gillard
  * @since 4/10/2021
- * @version 0.10.0
+ * @version 0.11.0
  */
 
 /*
@@ -122,27 +122,6 @@ public class Rummy {
         System.out.printf("\n- Player %d's turn -\n", activePlayer == player1 ? 1 : 2);
         CLI.pause();
 
-        activePlayer.sortByValue();
-        activePlayer.sortBySuit();
-        boolean drawing = false;
-        do{ // TODO: move this stuff to Player somehow
-            UI.showSideBySide(StandardDeck.cardBack, StandardDeck.getCardGUI(getFaceUpCard()));
-            activePlayer.getPossibleMelds();
-            StandardDeck.showHand(activePlayer.getCards());
-
-            System.out.println("Would you like to sort your cards or draw?");
-            System.out.println("1. Sort by Value | 2. Sort by Suit | 3. Draw");
-            int choice = Input.getInt(1, 3);
-            switch(choice){ // FIXME: 10/14/2021 these sorts are overwritten by getPossibleMelds, and are effectively useless right now
-                case 1 -> activePlayer.sortByValue();
-                case 2 -> activePlayer.sortBySuit();
-                case 3 -> drawing = true;
-            }
-
-        }while(!drawing);
-
-        System.out.println("Draw from stock or discard pile, or knock");
-        System.out.println("1. Draw from Stock | 2. Draw from Discard Pile | 3. Knock"); // 0 for cheatDraw
         byte action = activePlayer.getAction(activePlayer, getFaceUpCard());
         boolean knocked = switch(action){
             case 0, Actor.DRAW_STOCK -> {
@@ -179,10 +158,10 @@ public class Rummy {
             System.out.println(cardNumbers);
             System.out.println(" ".repeat(123) + " Drawn");
 
-            System.out.println("Select a card to get rid of:");
-            discardPile.add(activePlayer.removeCard(activePlayer.pickCard()));
+            Card toBeDiscard = activePlayer.removeCard(activePlayer.pickCard());
+            discardPile.add(toBeDiscard);
+            System.out.printf("Discarded the %s.\n", toBeDiscard);
 
-            activePlayer.getPossibleMelds();
             CLI.pause();
         }
 
@@ -204,7 +183,6 @@ public class Rummy {
             player1.selectMelds();
             player1.layoff(player1.getMelds());
         }
-        // TODO: remember to do the layoff before round results
 
         System.out.println("\n--- Round Results ---\n");
 

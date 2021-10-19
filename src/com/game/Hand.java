@@ -71,12 +71,11 @@ public class Hand {
         return holder.pickCard(List.copyOf(cards));
     }
 
-    private List<List<Card>> findMelds(){
+    public List<List<Card>> findMelds(){
         List<List<Card>> tempMelds = new ArrayList<>();
         List<Card> tempList;
 
         // Sets
-        sortBySuit(); // just to keep same values ordered by suit
         sortByValue();
         for(int i = 0; i < cards.size() - 2; i++){
             tempList = new ArrayList<>(List.of(cards.get(i)));
@@ -108,24 +107,6 @@ public class Hand {
         }
 
         return tempMelds;
-    }
-
-    public void getPossibleMelds(){
-        melds.clear();
-        melds = findMelds();
-
-        if(!melds.isEmpty()){
-            melds.sort(Comparator.comparingInt(List::size));
-
-            System.out.println("Possible melds:");
-            int listNum = 0;
-            for(List<Card> meld : melds){
-                String type = Objects.equals(meld.get(0).suit, meld.get(1).suit)
-                        ? meld.get(0).suit + " Run"
-                        : "Set of " + meld.get(0).rankName() + "s";
-                System.out.printf("%d. %s %s\n", ++listNum, type, meld);
-            }
-        }
     }
 
     private boolean isMeld(List<Card> meld, Card card){
@@ -182,19 +163,25 @@ public class Hand {
     }
 
     public void selectMelds(){
-        List<List<Card>> tempMelds = new ArrayList<>();
+        List<List<Card>> tempMelds = findMelds();
 
-        do{
-            getPossibleMelds();
+        while(!tempMelds.isEmpty()){
+            tempMelds.sort(Comparator.comparingInt(List::size));
 
-            if(!melds.isEmpty()){
-                List<Card> meld = melds.get(holder.pickMeld(melds));
-
-                tempMelds.add(meld);
-                for(Card card : meld)
-                    cards.remove(card);
+            System.out.println("Possible melds:");
+            int listNum = 0;
+            for(List<Card> meld : tempMelds){
+                String type = Objects.equals(meld.get(0).suit, meld.get(1).suit)
+                        ? meld.get(0).suit + " Run"
+                        : "Set of " + meld.get(0).rankName() + "s";
+                System.out.printf("%d. %s %s\n", ++listNum, type, meld);
             }
-        }while(!melds.isEmpty());
+
+            List<Card> meld = tempMelds.get(holder.pickMeld(melds));
+            tempMelds.add(meld);
+            for(Card card : meld)
+                cards.remove(card);
+        }
 
         melds = new ArrayList<>(tempMelds);
     }
