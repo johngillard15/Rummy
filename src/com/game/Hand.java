@@ -99,6 +99,8 @@ public class Hand {
             tempList = new ArrayList<>(List.of(cards.get(i)));
 
             while(i + 1 < cards.size() && Objects.equals(cards.get(i).suit, cards.get(i + 1).suit)){
+                // TODO: take a look at this duplicate value
+                //  condition to make sure they aren't ending the run prematurely
                 if(cards.get(i).rank + 1 == cards.get(i + 1).rank)
                     tempList.add(cards.get(i + 1));
                 else if(cards.get(i).rank != cards.get(i + 1).rank)
@@ -122,8 +124,7 @@ public class Hand {
     }
 
     private boolean isRun(List<Card> run, Card card){
-        return run.stream().allMatch(runCard -> Objects.equals(runCard.suit, card.suit))
-                && Objects.equals(card.suit, run.get(0).suit)
+        return Objects.equals(card.suit, run.get(0).suit) && Objects.equals(card.suit, run.get(run.size() - 1).suit)
                 && card.rank + 1 == run.get(0).rank || card.rank - 1 == run.get(run.size() - 1).rank;
     }
 
