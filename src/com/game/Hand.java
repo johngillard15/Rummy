@@ -128,6 +128,8 @@ public class Hand {
     }
 
     public void layoff(List<List<Card>> opponentMelds){
+        System.out.println("Layoff");
+
         do{
             int meldIndex = holder.pickMeld(opponentMelds); // TODO: make sure this does not run if list is empty
             if(meldIndex == -1)

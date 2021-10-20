@@ -19,7 +19,7 @@ import java.util.List;
  *
  * @author John Gillard
  * @since 4/10/2021
- * @version 0.12.0
+ * @version 0.12.1
  */
 
 /*
@@ -163,11 +163,9 @@ public class Rummy {
 
         if(!knocked){
             System.out.println("Discarding...");
-
             Card toBeDiscard = activePlayer.removeCard(activePlayer.pickCard());
             discardPile.add(toBeDiscard);
-
-            System.out.printf("\nDiscarded the %s.\n", toBeDiscard);
+            System.out.printf("Discarded the %s.\n", toBeDiscard);
 
             CLI.pause();
         }
@@ -182,7 +180,6 @@ public class Rummy {
             System.out.println("\nPlayer 2");
             player2.selectMelds();
 
-            System.out.println("Layoff");
             player2.layoff(player1.getMelds());
         }
         else{
@@ -191,7 +188,6 @@ public class Rummy {
             System.out.println("\nPlayer 1");
             player1.selectMelds();
 
-            System.out.println("Layoff");
             player1.layoff(player2.getMelds());
         }
 

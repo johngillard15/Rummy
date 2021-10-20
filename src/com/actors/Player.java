@@ -4,6 +4,7 @@ import com.card.Card;
 import com.deck.StandardDeck;
 import com.game.Actor;
 import com.game.Hand;
+import com.utilities.CLI;
 import com.utilities.Input;
 import com.utilities.UI;
 
@@ -55,8 +56,16 @@ public class Player implements Actor {
             System.out.println("1. Sort by Value | 2. Sort by Suit | 3. Draw");
             int choice = Input.getInt(1, 3);
             switch(choice){
-                case 1 -> hand.sortByValue();
-                case 2 -> hand.sortBySuit();
+                case 1 -> {
+                    hand.sortByValue();
+                    CLI.cls();
+                    System.out.println("Sorting by value...");
+                }
+                case 2 -> {
+                    hand.sortBySuit();
+                    CLI.cls();
+                    System.out.println("Sorting by suit...");
+                }
                 case 3 -> drawing = true;
             }
         }while(!drawing);
