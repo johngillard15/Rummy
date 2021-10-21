@@ -98,13 +98,10 @@ public class Hand {
         for(int i = 0; i < cards.size() - 2; i++){
             tempList = new ArrayList<>(List.of(cards.get(i)));
 
-            while(i + 1 < cards.size() && Objects.equals(cards.get(i).suit, cards.get(i + 1).suit)){
-                // TODO: take a look at this duplicate value
-                //  condition to make sure they aren't ending the run prematurely
-                if(cards.get(i).rank + 1 == cards.get(i + 1).rank)
-                    tempList.add(cards.get(i + 1));
-                else if(cards.get(i).rank != cards.get(i + 1).rank)
-                    break;
+            while(i + 1 < cards.size()
+                    && Objects.equals(cards.get(i).suit, cards.get(i + 1).suit)
+                    && cards.get(i).rank + 1 == cards.get(i + 1).rank){
+                tempList.add(cards.get(i + 1));
                 ++i;
             }
 
