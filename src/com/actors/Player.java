@@ -35,6 +35,7 @@ public class Player implements Actor {
 
         boolean drawing = false;
         do{
+            System.out.println("Face up card:");
             UI.showSideBySide(StandardDeck.cardBack, StandardDeck.getCardGUI(faceUpCard));
 
             if(!possibleMelds.isEmpty()){
@@ -50,6 +51,7 @@ public class Player implements Actor {
                 }
             }
 
+            System.out.println("Your cards:");
             StandardDeck.showHand(hand.getCards());
 
             System.out.println("Would you like to sort your cards or draw?");

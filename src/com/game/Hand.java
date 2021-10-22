@@ -3,10 +3,8 @@ package com.game;
 import com.card.Card;
 import com.deck.StandardDeck;
 import com.utilities.CLI;
-import com.utilities.Input;
 
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
 
@@ -125,11 +123,33 @@ public class Hand {
                 && card.rank + 1 == run.get(0).rank || card.rank - 1 == run.get(run.size() - 1).rank;
     }
 
+    private boolean ableToLayoff(List<List<Card>> opponentMelds){
+        for(int i = 0; i < opponentMelds.size();){
+            List<Card> meld = opponentMelds.get(i);
+            boolean playable = false;
+
+            for(Card card : cards){
+                if(isMeld(meld, card))
+                    playable = true;
+            }
+
+            if(playable)
+                ++i;
+            else
+                opponentMelds.remove(meld);
+        }
+
+        return !opponentMelds.isEmpty();
+    }
+
     public void layoff(List<List<Card>> opponentMelds){
-        System.out.println("Layoff");
+        System.out.println("\nLayoff");
 
         do{
-            int meldIndex = holder.pickMeld(opponentMelds); // TODO: make sure this does not run if list is empty
+            if(!ableToLayoff(opponentMelds))
+                break;
+
+            int meldIndex = holder.pickMeld(opponentMelds);
             if(meldIndex == -1)
                 break;
 
@@ -139,13 +159,16 @@ public class Hand {
                 System.out.printf("Added %s to opponent meld.\n", cards.get(cardIndex));
                 opponentMelds.get(meldIndex).add(cards.remove(cardIndex));
             }
-            else{ // TODO: improve this, maybe automate
-                System.out.println("That card cannot be applied to this meld.\n" +
-                        "Pick another card/meld or enter '0' to end layoff");
-            }
+            else
+                System.out.println("That card cannot be applied to this meld.");
 
             CLI.pause();
         }while(true);
+
+        if(opponentMelds.isEmpty()){
+            System.out.println("No more melds to play against.");
+            CLI.pause();
+        }
     }
 
     public void selectMelds(){

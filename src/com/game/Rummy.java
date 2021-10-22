@@ -7,7 +7,6 @@ import com.deck.Deck;
 import com.deck.StandardDeck;
 import com.utilities.CLI;
 import com.utilities.Input;
-import com.utilities.UI;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -19,7 +18,7 @@ import java.util.List;
  *
  * @author John Gillard
  * @since 4/10/2021
- * @version 0.12.3
+ * @version 0.12.4
  */
 
 /*
@@ -75,7 +74,7 @@ public class Rummy {
         player1 = new Hand(new Player("P1"));
         player2 = new Hand(new Player("P2"));
 
-        System.out.println("--- Gin Rummy ---");
+        System.out.println("\n\n\n--- Welcome to Gin Rummy! ---");
         CLI.pause();
     }
 
@@ -111,6 +110,9 @@ public class Rummy {
         setup();
 
         while(turn(player1) && turn(player2));
+
+        if(deck.size() == 2)
+            System.out.println("\nThe deck only has 2 cards left. Round void.");
 
         return player1.getScore() < 100 && player2.getScore() < 100;
     }
@@ -150,6 +152,7 @@ public class Rummy {
                 System.out.println("Drawing from discard pile...");
                 activePlayer.addCard(getFaceUpCard());
                 discardPile.remove(discardPile.size() - 1);
+
                 yield false;
             }
             case Actor.KNOCK -> {
@@ -162,13 +165,17 @@ public class Rummy {
         };
 
         if(!knocked){
-            System.out.println("Discarding...");
+            System.out.println("\nDiscarding...");
+            
             Card toBeDiscard = activePlayer.removeCard(activePlayer.pickCard());
             discardPile.add(toBeDiscard);
             System.out.printf("Discarded the %s.\n", toBeDiscard);
 
             CLI.pause();
         }
+
+        if(deck.size() == 2)
+            return false;
 
         return !knocked;
     }
