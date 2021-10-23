@@ -80,7 +80,7 @@ public class UI {
         for(String string : strings)
             scannerList.add(new Scanner(string));
 
-        while(scannerList.get(0).hasNextLine()){
+        while(!scannerList.isEmpty() && scannerList.get(0).hasNextLine()){
             StringBuilder line = new StringBuilder();
             for(Scanner scanner : scannerList)
                 line.append(scanner.nextLine()).append(" ");

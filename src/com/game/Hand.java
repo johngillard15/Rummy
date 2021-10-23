@@ -126,17 +126,15 @@ public class Hand {
     private boolean ableToLayoff(List<List<Card>> opponentMelds){
         for(int i = 0; i < opponentMelds.size();){
             List<Card> meld = opponentMelds.get(i);
-            boolean playable = false;
 
             for(Card card : cards){
-                if(isMeld(meld, card))
-                    playable = true;
-            }
+                if(isMeld(meld, card)){
+                    ++i;
+                    break;
+                }
 
-            if(playable)
-                ++i;
-            else
                 opponentMelds.remove(meld);
+            }
         }
 
         return !opponentMelds.isEmpty();
@@ -145,7 +143,7 @@ public class Hand {
     public void layoff(List<List<Card>> opponentMelds){
         System.out.println("\nLayoff");
 
-        do{
+        do{ // FIXME: 10/22/2021 may still run once even though no matches are possible
             if(!ableToLayoff(opponentMelds))
                 break;
 
