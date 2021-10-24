@@ -18,33 +18,21 @@ import java.util.List;
  *
  * @author John Gillard
  * @since 4/10/2021
- * @version 0.12.5
+ * @version 0.12.6
  */
 
 /*
  * Setting up rounds
  * - first action - non-dealer decides if they want the face up card. If they pass, the dealer has the option to take
  *  it. If the dealer passes as well, player 2 will draw from the deck.
- *
- * Turn
- * - each turn - player can draw from either the face-up or face-down pile. If drawing from face-down, player can
- * decide to discard to face-up or their hand. If a player takes a card for their hand, they must also discard
- * something.
- *
- * Going Gin
- * - round can also end by going gin
- * - going gin means having every card in hand as a part of a meld. No layoffs allowed.
- * - player with gin gets the value of opponents unmatched cards in addition to a 25(20?) point bonus
- * - if the draw deck gets down to 2 cards without a knock, the round is void
  */
 
 public class Rummy {
     private Deck deck;
-    private final List<Card> discardPile = new ArrayList<>(); // TODO: turn discardPile into a stack?
+    private final List<Card> discardPile = new ArrayList<>();
     Hand player1, player2;
     public static final int UNDERCUT = 10;
     public static final int GIN = 20;
-    public static final int BIG_GIN = 30;
 
     public Rummy(){
         player1 = new Hand(new Player("P1"));
