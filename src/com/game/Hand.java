@@ -5,6 +5,7 @@ import com.deck.StandardDeck;
 import com.utilities.CLI;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
 
@@ -106,6 +107,9 @@ public class Hand {
             if(tempList.size() >= 3)
                 tempMelds.add(tempList);
         }
+
+        if(!tempMelds.isEmpty())
+            tempMelds.sort(Comparator.comparing(List::size));
 
         return tempMelds;
     }
